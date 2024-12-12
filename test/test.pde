@@ -1,41 +1,44 @@
-import processing.sound.*;
+import processing.video.*;
+// Two global variables
+float x;
+float y;
 
-FFT fft;
-AudioIn in;
-int bands = 256*2; // 周波数帯の数を増加
-float[] spectrum = new float[bands];
+// Variable to hold onto Capture object.
+Capture video;
 
 void setup() {
-  size(800, 600); // 画面サイズを大きく変更
+  size(640, 480);
   background(255);
+  // Start x and y in the center
+  x = width/2;
+  y = height/2;
+  // Start the capture process
+  video = new Capture(this, width, height);
+  video.start();
+}
 
-  // FFTとAudioInの初期化
-  fft = new FFT(this, bands);
-  in = new AudioIn(this, 0);
+void captureEvent(Capture video) {
+  // Read image from the camera
+  video.read();
+}
 
-  // 音声入力を開始
-  in.start();
+void draw() {
+  video.loadPixels();
+  float newx = constrain(x + random(-20, 20), 0, width);
+  float newy = constrain(y + random(-20, 20), 0, height-1);
 
-  // FFTの入力ソースを設定
-  fft.input(in);
-}      
+  // Find the midpoint of the line
+  int midx = int((newx + x) / 2);
+  int midy = int((newy + y) / 2);
+  // Pick the color from the video, reversing x
+  color c = video.pixels[(width-1-midx) + midy*video.width];
 
-void draw() { 
-  background(255);
-  noStroke();
-  fill(100, 150, 255); // バーの色
+  // Draw a line from (x,y) to (newx,newy)
+  stroke(c);
+  strokeWeight(4);
+  line(x, y, newx, newy);
 
-  // FFTでスペクトラムを解析
-  fft.analyze(spectrum);
-
-  float barWidth = width / (float)bands; // 各バーの幅
-
-  // 各周波数帯域の振幅を描画
-  for (int i = 0; i < bands; i++) {
-    float amplitude = spectrum[i] * height * 1000; // 振幅をスケールアップ
-    float x = i * barWidth; // 横軸に音程（周波数帯）
-    float y = height - amplitude; // 縦軸に音量（振幅）
-
-    rect(x, y, barWidth, amplitude); // バーを描画
-  }
+  // Save (newx,newy) in (x,y)
+  x = newx;
+  y = newy;
 }
