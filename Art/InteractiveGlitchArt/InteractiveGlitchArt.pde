@@ -6,6 +6,7 @@ float glitchStrength = 100;  // グリッチの強さ
 
 void setup() {
   size(500, 375);
+  //fullScreen();
   
   // カメラ映像を取得
   String[] cameras = Capture.list();

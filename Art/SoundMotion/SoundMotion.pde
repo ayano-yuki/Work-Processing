@@ -29,7 +29,7 @@ void setup() {
   bands = 128;   // FFTのバンド数
   spectrum = new float[bands];  // 周波数データを格納する配列
 
-  motionThreshold = 300;  // 動きの検出閾値
+  motionThreshold = 350;  // 動きの検出閾値
   minCellSize = 10;       // cellSizeの最小値
   maxCellSize = 50;      // cellSizeの最大値
 

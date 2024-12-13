@@ -2,7 +2,7 @@ import processing.sound.*;
 
 FFT fft;
 AudioIn in;
-int bands = 128;
+int bands = 3;
 float[] spectrum = new float[bands];
 
 void setup() {
